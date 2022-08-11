@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class BJ1010다리놓기 {
+public class BJ1010다리놓기 {
 
 	static int T;
 	static int result;
