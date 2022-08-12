@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class SWEA햄버거 {
+public class SWEA햄버거다이어트5215 {
 	
 	static int T, N, L;
 	static int taste[];
