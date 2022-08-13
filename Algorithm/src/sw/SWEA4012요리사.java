@@ -11,12 +11,9 @@ public class SWEA4012요리사 {
 
 	static int T, N;
 	static int map[][];
-//	static List<int[]> A = new ArrayList<>();
-//	static List<int[]> B = new ArrayList<>();
-//	static int taste[][];
-	static List<Food> synergy = new ArrayList<>();
-	static List<Food> tgt = new ArrayList<>();
-	
+	static List<Integer> A = new ArrayList<>();
+	static List<Integer> B = new ArrayList<>();
+	static int tgt[];
 	static int min, sum;
 	
 	public static void main(String[] args) throws Exception{
@@ -32,6 +29,9 @@ public class SWEA4012요리사 {
 
 			N = Integer.parseInt(st.nextToken());
 			map = new int[N][N];
+//			A = new int[N/2][N/2];
+//			B = new int[N/2][N/2];
+			tgt = new int[N/2];
 			
 			for(int i=0;i<N;i++) {
 				st = new StringTokenizer(br.readLine());
@@ -47,58 +47,56 @@ public class SWEA4012요리사 {
 			// 위를 반복해서 음식의 차가 가장 작은 경우 구하기
 			
 			// 각각 시너지 값 구하기
-		
 			// 모든 식재료에 21 12 , 31 13 등 더한 2차원 배열 만들기
-			
-			for(int i=0;i<N;i++) {
-				for(int j=i;j<N;j++) {
-					if(i == j) continue;
-					synergy.add(new Food(map[i][j] + map[j][i], i, j));
-					
-				}
-			}
 			
 			min = Integer.MAX_VALUE;
 			comb(0, 0);
 			
 			System.out.println("#" +t+ " " + min);
 		}
-		
-	
-		
-		
-		
 	}
+	
 	static void comb(int srcIdx, int tgtIdx) {
 		
-		if(tgtIdx == 2) {
-			// 두 조합 중 차이 가장 작은 것 구하기
-			if(tgt.get(0).a != tgt.get(1).a && tgt.get(0).b != tgt.get(1).b
-					&& tgt.get(0).a != tgt.get(1).b && tgt.get(0).b != tgt.get(1).a) {
-				min = Math.min(min, Math.abs( tgt.get(0).s - tgt.get(1).s ));
-			}
-			
+		if( tgtIdx == N/2 ) {
+			chk();
 			return;
 		}
+		if( srcIdx == N ) return;
 		
-		if(srcIdx == synergy.size()) return;
-		
-		tgt.add(synergy.get(srcIdx));
+		//tgt.add
+		tgt[tgtIdx] = srcIdx;
 		comb(srcIdx + 1, tgtIdx + 1);
-		tgt.remove(synergy.get(srcIdx));
+		//tgt.remove
 		comb(srcIdx + 1, tgtIdx);
 		
 	}
 	
-	static class Food {
-		int s, a, b;
-
-		public Food(int s, int a, int b) {
-			this.s = s;
-			this.a = a;
-			this.b = b;
+	static void chk() {
+		
+		int A_sum = 0;
+		int B_sum = 0;
+		
+		for(int i=0;i<N/2;i++) {
+			// 현재 tgt 가 가지고 있는 원소 -> A, 포함하지 않은 것은 B로
+			A.add(tgt[i]);
+		}
+		for(int i=0;i<N;i++) {
+			if(!A.contains(i)) B.add(i);
 		}
 		
+		// 해당 인덱스들의 합 구하기
+		for(int i=0;i<N/2;i++) {
+			for(int j=0;j<N/2;j++) {
+				if(i == j) continue;
+				A_sum += map[ A.get(i)][ A.get(j)];
+				B_sum += map[ B.get(i)][ B.get(j)];
+			}
+		}
+		
+		min = Math.min(min, Math.abs(A_sum - B_sum));
+		A.clear();
+		B.clear();
 	}
 
 }

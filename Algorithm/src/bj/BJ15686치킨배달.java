@@ -36,10 +36,7 @@ public class BJ15686치킨배달 {
 		}
 		// 입력 완
 		
-		// 조합?
-		
 		// 모든 집과 치킨집에 대한 치킨거리 구하기
-		
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<N;j++) {
 				
@@ -52,7 +49,7 @@ public class BJ15686치킨배달 {
 			}
 		}
 		
-		// M개 (3개) 뽑기
+		// M개 뽑기
 		result = Integer.MAX_VALUE;
 		comb(0, 0);
 		
@@ -63,11 +60,10 @@ public class BJ15686치킨배달 {
 	static void comb(int srcIdx, int tgtIdx) {
 		// 기저 조건
 		if(tgtIdx == M) {
-		// 해당 거리와 모든 집과 거리 최솟값 구하기
 			minSum = 0;
-			for(int i=0;i<home.size();i++) {
+			for(int i=0;i<home.size();i++) { // 집을 기준으로 최소치킨집 거리 찾
 				min = Integer.MAX_VALUE;
-				for(int j=0;j<M;j++) {
+				for(int j=0;j<tgt.length;j++) {
 					int dx = Math.abs( home.get(i).x - tgt[j].x );
 					int dy = Math.abs( home.get(i).y - tgt[j].y );
 					
@@ -80,13 +76,12 @@ public class BJ15686치킨배달 {
 		}
 		
 		
-		if( srcIdx == M ) return;
+		if( srcIdx == chicken.size() ) return;
 		tgt[tgtIdx] = chicken.get(srcIdx);
 		
 		comb( srcIdx + 1, tgtIdx + 1);
 		comb( srcIdx + 1, tgtIdx );
 		
-	
 	}
 
 	
