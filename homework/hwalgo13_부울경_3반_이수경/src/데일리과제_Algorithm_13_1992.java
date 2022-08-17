@@ -1,9 +1,8 @@
-package bj;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class BJ1992쿼드트리 {
+public class 데일리과제_Algorithm_13_1992 {
 	static int N;
 	static int map[][];
 	static StringBuilder sb = new StringBuilder();
@@ -51,7 +50,7 @@ public class BJ1992쿼드트리 {
 			sb.append(0);
 			return;
 		}	
-		else { // 압축 불가능한 경
+		else { // 압축 불가능한 경우 
 			sb.append('(');
 			
 			// 1사분면
