@@ -1,6 +1,7 @@
 package sw;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
@@ -17,7 +18,9 @@ public class SW_무선충전_5644 {
     static int[] dx = { 0,  0, 1, 0,-1 };
 
     public static void main(String[] args) throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.setIn(new FileInputStream("src/sw/SWEA5644무선충전.txt"));
+
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         T = Integer.parseInt(br.readLine());
 
         for (int t = 1; t <= T; t++) {
@@ -92,6 +95,7 @@ static void charge() {
             int aPower = getPower(bcArray[i], ay, ax); // bcArray[i]
             int bPower = getPower(bcArray[j], by, bx);// bcArray[j]
             
+            
             // 0 이면 거르자
             if( aPower == 0 && bPower == 0 ) continue;
             
@@ -115,6 +119,7 @@ static int getPower(BC bc, int y, int x) {
     if( Math.abs(bc.y - y) + Math.abs(bc.x - x) <= bc.c ) return bc.p; 
     return 0;
 }
+
 
 // BC 클래스
 static class BC{
