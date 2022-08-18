@@ -1,4 +1,4 @@
-package live0818;
+package live.live0818;
 
 import java.util.Scanner;
 
