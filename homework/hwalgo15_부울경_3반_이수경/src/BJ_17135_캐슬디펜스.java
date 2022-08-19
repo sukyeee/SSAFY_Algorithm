@@ -1,4 +1,3 @@
-package bj;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class BJ17135캐슬디펜스 {
+public class BJ_17135_캐슬디펜스 {
 
 	static int N, M, D;
 	static int map[][];
