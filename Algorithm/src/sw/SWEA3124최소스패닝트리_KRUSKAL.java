@@ -3,20 +3,21 @@ package sw;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class SWEA3124최소스패닝트리 {
+public class SWEA3124최소스패닝트리_KRUSKAL {
 
 	
 	static int T, V, E;
 	static int A, B, C;
 	
-	static List<Node> node[];
 	static int parent[];
 	static int cnt;
-	static boolean visit[];
+	static Edge vertex[];
+	
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -30,12 +31,8 @@ public class SWEA3124최소스패닝트리 {
 			V = Integer.parseInt(st.nextToken());
 			E = Integer.parseInt(st.nextToken());
 			parent = new int[V+1];
-			visit = new boolean[V+1];
-			node = new ArrayList[V+1];
-			
-			for (int i = 0; i <= V; i++) {
-				node[i] = new ArrayList<>();
-			}
+			vertex = new Edge[E];
+			for(int i=1;i<=V;i++) parent[i] = i;
 			
 			for(int i=0;i<E;i++) {
 				st = new StringTokenizer(br.readLine());
@@ -43,64 +40,71 @@ public class SWEA3124최소스패닝트리 {
 				B = Integer.parseInt(st.nextToken());
 				C = Integer.parseInt(st.nextToken());
 				
-				node[A].add(new Node(B, C));
-				node[B].add(new Node(A, C));
+				vertex[i] = new Edge(A,B,C);
 				
 			}
+			// vertex 가중치 오름차순 정렬
+			Arrays.sort(vertex, (o1,o2) -> o1.value - o2.value);
 			
-			// 가중치 순서대로 오름차순 정렬
-			for(int i=0;i<=V;i++) {
-				Collections.sort(node[i], (a,b)->a.value-b.value);
-			}
-			
-			int i= node[1].get(0).n;
-			visit[node[1].get(0).n] = true;
-			
-			while(true) {
-				// V-1 개 만큼 연결되면 중지
-				if( cnt == V-1 ) break;
+			int cnt = 0;
+			int sum = 0;
+			for(int i=0; i<E; i++) {
 				
-				// 사이클 체크 ( 사이클이 아니라면 cnt 증가 )
-				if( !visit[node[i].get(B).n] )
-				{
-					// 제일 작은 가중치를 가진 간선부터 연결
-					union(node[i].get(A).n, node[i].get(B).n);
-					cnt++;	
+				
+				if(union( vertex[i].a , vertex[i].b )) {
+					cnt++;
+					sum += vertex[i].value;
 				}
 				
-				
-				
-				i++;
+				if(cnt == V-1) break;
 			}
+		
+			System.out.println("#" + t + " " + sum);
 			
 		}
 		
 		
 	}
+	static class Edge {
+		int a;
+		int b;
+		int value;
 
+		public Edge(int a, int b, int value) {
+			super();
+			this.a = a;
+			this.b = b;
+			this.value = value;
+		}
+		
+	}
 	
 	static int find(int x) {
 		if(parent[x] == x) return x;
 		else return parent[x] = find( parent[x]);
 	}
 	
-	static void union(int x, int y) {
+	static boolean union(int x, int y) {
 		int px = find(x);
 		int py = find(y);
+		
+		if( px == py )return false;
+		
 		if( px < py ) parent[py] = px;
 		else parent[px] = py;
+		return true;
 	}
 		
-	static class Node {
-		int value;
-		int n;
-		public Node(int n, int value) {
-			super();
-			this.value = value;
-			this.n = n;
-		}
-		
-		
-	}
+	
 
 }
+
+/* 
+
+1
+3 3
+1 2 1
+2 3 2
+1 3 3
+
+*/

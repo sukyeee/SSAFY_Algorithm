@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 // kruskal
-public class SW_최소신장트리_3124 {
+public class SW_최소신장트리_3124_KRUSKAL {
 
 	static int T, V, E;
 	static long sum;

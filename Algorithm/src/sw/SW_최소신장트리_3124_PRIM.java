@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 // prim + priority queue ( 프림 + 우선순위 큐 ) 
-public class SW_최소신장트리_3124_2 {
+public class SW_최소신장트리_3124_PRIM {
 
 	static int T, V, E;
 	static long sum;
