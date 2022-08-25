@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import bj.BJ_아기상어_16236.Node;
 
 public class BJ16236아기상어 {
 
@@ -83,11 +86,15 @@ public class BJ16236아기상어 {
 			mulgogi = new Node(eatable.get(0).y, eatable.get(0).x, eatable.get(0).size);
 			
 			// 물고기한테 갈 수 있는지 체크 ( 큰 물고기가 있으면 지나가지 못함)
+			depth = 0;
+			for(int i=0;i<N;i++)Arrays.fill(visit[i], false);
+			q.clear();
+			flag = false;
 			bfs(shark.y, shark.x);
 			
 			if(!flag) continue;
 			
-			time += depth-1; // 물고기와 상어 거리 차이만큼 시간 증가
+			time += depth; // 물고기와 상어 거리 차이만큼 시간 증가
 			
 			// 자신보다 물고기 크기가 작다면 잡아먹음
 			if( shark.size > map[mulgogi.y][mulgogi.x] ) {
@@ -100,9 +107,10 @@ public class BJ16236아기상어 {
 			}
 			
 			// 물고기 위치로 이동
+			map[shark.y][shark.x] = 0; //기존 상어 자리는 0으로
 			shark.y = mulgogi.y;
 			shark.x = mulgogi.x;
-			
+
 		}
 		
 		
@@ -129,7 +137,7 @@ public class BJ16236아기상어 {
 					int px = e.x + dx[d];
 					
 					if( py < 0 || py >= N || px < 0 || px >= N 
-							|| map[py][px] > shark.size || visit[py][px]) continue;
+							|| map[py][px] > shark.size || visit[py][px] ) continue;
 					
 					if( py == mulgogi.y && px == mulgogi.x) {
 						flag = true;
@@ -140,6 +148,7 @@ public class BJ16236아기상어 {
 					
 					
 				}
+				
 				if(flag) break;
 			}
 			
@@ -162,3 +171,4 @@ public class BJ16236아기상어 {
 	}
 
 }
+
