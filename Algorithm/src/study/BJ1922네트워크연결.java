@@ -1,4 +1,4 @@
-package bj;
+package study;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
+// Prim
 public class BJ1922네트워크연결 {
 
 	static int N, M;

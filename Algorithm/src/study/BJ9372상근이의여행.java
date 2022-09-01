@@ -1,9 +1,10 @@
-package bj;
+package study;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+// Kruskal
 public class BJ9372상근이의여행 {
 
 	static int T, N, M, a,b;

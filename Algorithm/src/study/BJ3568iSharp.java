@@ -1,4 +1,4 @@
-package bj;
+package study;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

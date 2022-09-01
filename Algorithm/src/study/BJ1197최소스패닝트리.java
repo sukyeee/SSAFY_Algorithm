@@ -1,10 +1,11 @@
-package bj;
+package study;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+// Kruskal
 public class BJ1197최소스패닝트리 {
 
 	static int V, E;

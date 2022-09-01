@@ -1,6 +1,7 @@
 package sw;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
@@ -12,6 +13,8 @@ public class SW_특이한자석_4013 {
 	static int[][] gear = new int[4][8]; // 자석
 	
 	public static void main(String[] args) throws Exception {
+		System.setIn(new FileInputStream("src/sw/SWEA4013특이한자석.txt"));
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		T = Integer.parseInt(br.readLine());
 		

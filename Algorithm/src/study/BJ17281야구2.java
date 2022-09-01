@@ -1,4 +1,4 @@
-package bj;
+package	study;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class BJ17281야구 {
+public class BJ17281야구2 {
 
 	static int N;
 	static int inning[][];
@@ -19,6 +19,7 @@ public class BJ17281야구 {
 	static int max = Integer.MIN_VALUE;
 	static boolean flag;
 	static int player[] = new int[4];
+	static int ex;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -40,7 +41,7 @@ public class BJ17281야구 {
 //		tgt[3] = 0; //0번 타자가 항상 3번째 투수 
 //		select[3] = true;
 
-		perm(1);
+		perm(0);
 		
 		System.out.println(max);
 
@@ -116,10 +117,11 @@ public class BJ17281야구 {
 	
 
 	static void perm(int tgtIdx) {
-
-		if (tgtIdx == tgt.length) {
-			System.out.print(Arrays.toString(tgt));
-			System.out.println();
+		
+		if (tgtIdx == tgt.length && tgt[3] == 0) {
+//			ex++;
+//			System.out.print(Arrays.toString(tgt));
+//			System.out.println();
 			ans = 0;
 			search();
 			max = Math.max(max, ans);
@@ -131,13 +133,12 @@ public class BJ17281야구 {
 
 			if (select[i]) 	continue;
 			
-			if(i != 3 ) {
-				tgt[i] = tgtIdx;
+				tgt[tgtIdx] = i;
 				select[i] = true;
-				
-			}
-			perm(tgtIdx + 1);			
-			if(i != 3 )select[i] = false;
+				perm(tgtIdx + 1);			
+				select[i] = false;
+			
+			
 		}
 
 	}
