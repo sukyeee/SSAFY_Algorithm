@@ -48,7 +48,7 @@ public class test {
 		
 		double d = Math.sqrt(  (diff_x * diff_x)   +  (diff_y * diff_y) );
 		double D = d + r;
-		double se = (Math.atan2( goal_y , goal_x ) * 180 / Math.PI); // 세타 
+		double se = (Math.atan2( goal_x, goal_y  ) * 180 / Math.PI); // 세타 
 		double H = Math.cos(se) * D;
 		double W = Math.sin(se) * D; // 또는 피타고라서 정리로도 가능 
 		
@@ -58,11 +58,10 @@ public class test {
 		diff_x = Math.abs( W - white_x ); 
 		diff_y = Math.abs( H - white_y );
 		d = Math.sqrt(  (diff_x * diff_x)   +  (diff_y * diff_y) );
+		se = Math.atan2(diff_y, diff_x);
 		
-		Math.atan2(diff_x, diff_y);
-	
 		
-		System.out.println(  Math.atan2(35, 65 ) * 180  / Math.PI  );
+		System.out.println(  Math.atan2(35, 65 ) * 180  / Math.PI  ); // 대변, 인접변 순서. 인접변이 뒤에 온다.
 		
 		
 		
