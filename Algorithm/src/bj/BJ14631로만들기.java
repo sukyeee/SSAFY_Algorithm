@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 public class BJ14631로만들기 {
 
 	static int X;
-	static int max = 100;
-	static int num[] = new int[max + 1];
+	static int max = 1000000;
+	static int num[] = new int[max+1];
 
 	public static void main(String[] args) throws Exception {
 

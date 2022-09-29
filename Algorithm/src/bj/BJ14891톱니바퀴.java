@@ -135,14 +135,14 @@ public class BJ14891톱니바퀴 {
 		// 현재 자석보다 왼쪽 자석들
 		for (int i = num-1; i >= 0; i--) {
 			if( gear[i][2] != gear[i+1][6] ) {
-				direction[i] = direction[i+1] * (-1); // 반대방향으로 저장
+				direction[i] -= direction[i+1]; // 반대방향으로 저장
 			}
 		}
 		
 		// 현재 자석보다 오른쪽 자석들
 		for (int i = num+1; i < 4; i++) {
 			if( gear[i-1][2] != gear[i][6] ) {
-				direction[i] = direction[i-1] * (-1); // 반대 방향으로 저장 
+				direction[i] -= direction[i-1]; // 반대 방향으로 저장 
 			}
 		}
 	
