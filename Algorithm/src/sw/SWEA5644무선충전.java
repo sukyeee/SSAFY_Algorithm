@@ -12,136 +12,161 @@ import sw.SW_무선충전_5644.BC;
 public class SWEA5644무선충전 {
 
 	static int T, M, A;
-	static int a[]; // A의 이동 정보
-	static int b[]; // B의 이동 정보
-	static List<Item> info = new ArrayList<>();
-	static int dy[] = { 0, -1, 0, 1, 0 }; // - 상 우 하 좌
-	static int dx[] = { 0, 0, 1, 0, -1 };
-	static int map[][] = new int[11][11];
-	static int sum, max;
-	static int Ax, Ay, Bx, By;
-	static int aPower, bPower;
-	static int ans = 0;
+	static int user[][];
+	static Dist BC[];
+	static int dy[] = { 0, -1, 0, 1, 0 }; // 제자리 상 우 하 좌 
+	static int dx[] = { 0,  0, 1, 0,-1 };
+	static int ans;
 	public static void main(String[] args) throws Exception {
 
-		System.setIn(new FileInputStream("src/sw/SWEA5644무선충전.txt"));
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
 		T = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= T; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			
-			M = Integer.parseInt(st.nextToken());
-			A = Integer.parseInt(st.nextToken());
-
-			a = new int[M];
-			b = new int[M];
-			info.clear();
+			M = Integer.parseInt(st.nextToken()); // 이동한 거리 
+			A = Integer.parseInt(st.nextToken()); // BC 개수
+			user = new int[2][M];
+			BC = new Dist[A];
+			ans = 0;
+			for (int i = 0; i < 2; i++) {
+				st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < M; j++) {
+					user[i][j] = Integer.parseInt(st.nextToken());
+				}
+			}
 			
-			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < M; i++) {
-				a[i] = Integer.parseInt(st.nextToken());
-			}
-			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < M; i++) {
-				b[i] = Integer.parseInt(st.nextToken());
-			}
-
 			for (int i = 0; i < A; i++) {
 				st = new StringTokenizer(br.readLine());
-				int x = Integer.parseInt(st.nextToken());
-				int y = Integer.parseInt(st.nextToken());
-				int c = Integer.parseInt(st.nextToken());
-				int p = Integer.parseInt(st.nextToken());
-
-				info.add(new Item(y, x, c, p));
+				int X = Integer.parseInt(st.nextToken());
+				int Y = Integer.parseInt(st.nextToken());
+				int C = Integer.parseInt(st.nextToken());
+				int P = Integer.parseInt(st.nextToken());
+				
+				BC[i] = new Dist(Y, X, C, P);
 			}
-			// 입력 완
-
-			Ax = 1; Ay = 1;
-			Bx = 10; By = 10;
-			aPower = 0;	bPower = 0;
-			max = 0;
-			sum = 0;
-			ans = 0;
-			
-			// 처음 시작할 때 한 번 실행
-			simulation();
-			
+			// 	입력 완 
+		
+			int uy = 1;
+			int ux = 1;
+			int vy = 10;
+			int vx = 10;
+			// 맨 처음거도 충전 
+			ans += cal(uy, ux, vy, vx);
 			for (int i = 0; i < M; i++) {
-
-				Ax += dx[a[i]];
-				Ay += dy[a[i]];
-				Bx += dx[b[i]];
-				By += dy[b[i]];
+				uy += dy[user[0][i]];
+				ux += dx[user[0][i]];
 				
-				simulation();
+				vy += dy[user[1][i]];
+				vx += dx[user[1][i]];
 				
+				ans += cal(uy, ux, vy, vx);
+//				check(uy, ux, vy, vx);
 				
 			}
-			System.out.println("#" + t + " " + ans);
+			
+			
+			
+			System.out.println("#" + t + " " + ans);	
 		} // testcase
-
-	}
-
-//	if(Math.abs(Ax - info.get(i).x) + Math.abs(Ay - info.get(i).y) <= info.get(i).C) {
-//		aPower = info.get(i).P;
-//	}
-//	if(Math.abs(Bx - info.get(j).x) + Math.abs(By - info.get(j).y) <= info.get(j).C) {
-//		bPower = info.get(j).P;
-//	}	
-	static void simulation() {
-		// BC는 2개 까지만 겹칠 수 있음
-		
-		max = 0;
-		for (int i = 0; i < A; i++) { // 모든 BC 에 대해서 A 가  충전하려는 BC
-	        // i == j => A, B 가 같은 BC 에서 충전함
-	        for (int j = 0; j < A; j++) { // 모든 BC 에 대해서 B 가 충전하려는 BC
-	            int sum = 0; // A 충전량 + B 충전량
-	            
-	            
-	            int aPower = getPower(info.get(i), Ay, Ax); // bcArray[i]
-	            int bPower = getPower(info.get(j), By, Bx);// bcArray[j]
-
-	            // 0 이면 거르자
-	            if( aPower == 0 && bPower == 0 ) continue;
-	            
-	            // 둘 중 하나는 power 를 가지고 있다.
-	            // 두 충전소가 다르다
-	            if( i != j ) {
-	                sum = aPower + bPower; // 각각 다른 충전소에서 충전 => 단순히 더한다. (한쪽이 0 이어도 상관 X)
-	            }else { // 두 충전소가 같은 겨우
-	                // a, b 모두 충전이 되었다면  100 충전 => 50, 50 => 100
-	                // a, b 한쪽만 충전 ? 충전한 값을 선택
-	                sum = Math.max(aPower, bPower);
-	            }
-	            max = Math.max(max, sum); // 현재 i, j 의 BC 에서 충전한 전기량이 이전 BC 최대값보다 크면 선택
-	        }
-	    }
 		
 		
-		ans += max;
 	}
-	static int getPower(Item bc, int y, int x) {
-	    if( Math.abs(bc.y - y) + Math.abs(bc.x - x) <= bc.c ) return bc.p; 
-	    return 0;
+	
+	
+	static int cal(int uy, int ux, int vy, int vx) {
+		
+		int max = 0;
+		// user1의 충전소 
+		for (int i = 0; i < BC.length; i++) {
+			// user2의 충전소 
+			for (int j = 0; j < BC.length; j++) {
+				int sum = 0;
+				int amountA = getPower(uy, ux, i);
+				int amountB = getPower(vy, vx, j);
+				
+				if( i == j ) { // 같은 충전소를 쓴다면 ? 
+					sum = Math.max(amountA, amountB);
+				}
+				else if ( i != j ) { // 다른 충전소를 쓴다면 ?
+					sum = amountA + amountB;
+				}
+				
+				if( max < sum) max = sum;
+				
+			}
+		}
+		
+		return max;
+		
 	}
-
-	static class Item {
-
-		int y;
-		int x;
+	
+	static int getPower(int y, int x, int idx) {
+		
+		if( (Math.abs(y - BC[idx].y ) + Math.abs(x - BC[idx].x)) <= BC[idx].c ) {
+			return BC[idx].p;
+		}
+		
+		return 0;
+		
+	}
+	
+	static class Dist {
+		int y, x;
 		int c;
 		int p;
-
-		public Item(int y, int x, int c, int p) {
+		public Dist(int y, int x, int c, int p) {
+			super();
 			this.y = y;
 			this.x = x;
 			this.c = c;
 			this.p = p;
 		}
-
+		
 	}
-
 }
+
+/*
+5
+20 3
+2 2 3 2 2 2 2 3 3 4 4 3 2 2 3 3 3 2 2 3
+4 4 1 4 4 1 4 4 1 1 1 4 1 4 3 3 3 3 3 3
+4 4 1 100
+7 10 3 40
+6 3 2 70
+40 2
+0 3 0 3 3 2 2 1 0 4 1 3 3 3 0 3 4 1 1 3 2 2 2 2 2 0 2 3 2 2 3 4 4 3 3 3 2 0 4 4 
+0 1 0 3 4 0 4 0 0 1 1 1 0 1 4 4 4 4 4 3 3 3 0 1 0 4 3 2 1 4 4 3 2 3 2 2 0 4 2 1 
+5 2 4 140
+8 3 3 490
+60 4
+0 3 3 3 0 1 2 2 2 1 2 2 3 3 4 4 0 3 0 1 1 2 2 3 2 2 3 2 2 0 3 0 1 1 1 4 1 2 3 3 3 3 3 1 1 4 3 2 0 4 4 4 3 4 0 3 3 0 3 4 
+1 1 4 1 1 1 1 1 1 4 4 1 2 2 3 2 4 0 0 0 4 3 3 4 3 3 0 1 0 4 3 0 4 3 2 3 2 1 2 2 3 4 0 2 2 1 0 0 1 3 3 1 4 4 3 0 1 1 1 1 
+6 9 1 180
+9 3 4 260
+1 4 1 500
+1 3 1 230
+80 7
+2 2 2 2 2 2 0 2 2 0 4 0 2 3 3 2 3 3 0 3 3 3 4 3 3 2 1 1 1 0 4 4 4 1 0 2 2 2 1 1 4 1 2 3 4 4 3 0 1 1 0 3 4 0 1 2 2 2 1 1 3 4 4 4 4 4 4 3 2 1 4 4 4 4 3 3 3 0 3 3 
+4 4 1 1 2 1 2 3 3 3 4 4 4 4 4 1 1 1 1 1 1 1 1 0 3 3 2 0 4 0 1 3 3 3 2 2 1 0 3 2 3 4 1 0 1 2 2 3 2 0 4 0 3 4 1 1 0 0 3 2 0 0 4 3 3 4 0 4 4 4 4 0 3 0 1 1 4 4 3 0 
+4 3 1 170
+10 1 3 240
+10 5 3 360
+10 9 3 350
+9 6 2 10
+5 1 4 350
+1 8 2 450
+100 8
+2 2 3 2 0 2 0 3 3 1 2 2 2 2 3 3 0 4 4 3 2 3 4 3 3 2 3 4 4 4 2 2 2 0 2 2 4 4 4 4 1 1 1 2 2 2 4 3 0 2 3 3 4 0 0 1 1 4 1 1 1 1 2 2 1 1 3 3 3 0 3 2 3 3 0 1 3 3 0 1 1 3 3 4 0 4 1 1 2 2 4 0 4 1 1 2 2 1 1 1 
+4 4 4 0 4 1 1 4 1 1 1 1 3 2 1 2 1 1 4 4 1 0 2 3 4 4 4 4 4 0 1 0 2 2 2 0 2 2 2 2 2 2 3 0 0 1 4 3 3 2 0 0 4 4 4 0 2 0 4 1 1 2 2 0 4 4 0 0 2 0 2 3 3 0 2 3 0 3 4 0 4 3 4 4 3 4 1 1 2 2 2 0 0 1 0 4 1 1 1 4 
+3 4 2 340
+10 1 1 430
+3 10 4 10
+6 3 4 400
+7 4 1 80
+4 5 1 420
+4 1 2 350
+8 4 4 300
+
+*/
