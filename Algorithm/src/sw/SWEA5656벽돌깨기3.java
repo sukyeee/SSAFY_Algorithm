@@ -1,4 +1,5 @@
 package sw;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
@@ -6,7 +7,7 @@ import java.util.Deque;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class SWEA5656벽돌깨기 {
+public class SWEA5656벽돌깨기3 {
 
 	static int T, N, W, H;
 	static int map[][];
@@ -38,7 +39,9 @@ public class SWEA5656벽돌깨기 {
 				}
 			}
 			
-			perm(0); // 중복 순열 
+			go(map, 0);
+			
+			
 			
 			
 			System.out.println("#" + t + " " + min);
@@ -46,32 +49,17 @@ public class SWEA5656벽돌깨기 {
 
 	}
 	
-	static void perm(int tgtIdx) {
+	// 중복 순열 
+	static void go(int [][]map, int cnt) {
 		
-		if( tgtIdx == N ) { // 구슬 다 던짐 
-			// tgt 안에 중복순열 구성 
-			mapCopy = new int[H][W];
-			// 벽돌 복사 
-			copy(map, mapCopy);
-			
-			go(mapCopy);
-			
-			brickCount(mapCopy); // min값 업데이트 
+		if(cnt == N) { // 구슬을 다 던졌으면 
+			brickCount(mapCopy);
 			return;
+		}
+		mapCopy = new int[H][W];
+
+		for (int x = 0; x < W; x++) {
 			
-		}
-		
-		for (int i = 0; i < W; i++) {
-			tgt[tgtIdx] = i;
-			perm(tgtIdx + 1);
-		}
-		
-	}
-	static void go(int [][]map) {
-		
-		
-		
-		for (int x : tgt) {
 			
 			// 구슬에 맞는 시작벽돌 찾기 
 			int y = 0;
@@ -80,6 +68,8 @@ public class SWEA5656벽돌깨기 {
 				continue;
 			}else {
 				
+				// 벽돌 복사 
+				copy(map, mapCopy);
 				
 				// 벽돌 연쇄 작업
 				check(mapCopy, y, x);
@@ -87,8 +77,13 @@ public class SWEA5656벽돌깨기 {
 				// 벽돌 아래로 당기기 
 				down(mapCopy);
 				
-					
+				// 벽돌 개수 세기 ( 최소 벽돌 개수 갱신 )
+				brickCount(mapCopy);
+				
+				go(mapCopy, cnt + 1); // 다음 구슬 던지기 	
 			}
+			
+			
 		}
 		
 		
