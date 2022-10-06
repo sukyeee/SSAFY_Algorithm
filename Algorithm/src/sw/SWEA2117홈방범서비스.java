@@ -63,9 +63,9 @@ public class SWEA2117홈방범서비스 {
 				for (int i = 0; i < N; i++) {
 					for (int j = 0; j < N; j++) {
 						 house = 0;
-						for (Dist e : list) {
+						for (Dist e : list) { // 집의 위치 
 							int dist = getDistance(i, j, e.y, e.x); // 현재 위치와, 구하려는 곳의 거리 차이
-								// 집이 있다면 cnt++
+								
 								
 								if (dist <= k-1 )  // N 
 									house++;

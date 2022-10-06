@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class SWEA2115벌꿀채취 {
+public class SWEA2115벌꿀채취2 {
 
 	static int T;
 	static int N, M, C, res, map[][], profit[][];
@@ -48,7 +48,18 @@ public class SWEA2115벌꿀채취 {
 		} // testcase
 		
 	}
-	
+	 static void process() {
+			
+		// 꿀을 채취할 수 있는 구간에서 얻을 수 있는 최대 수익
+		makeProfit();
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j <= N-M; j++) {
+				combination(i, j+M, 1, profit[i][j]);
+			}
+		}
+		
+	}
+	 
 	static void combination(int x, int y, int cnt, int sum) {
 		if(cnt==2){
 			res = Math.max(res,sum);
@@ -61,17 +72,7 @@ public class SWEA2115벌꿀채취 {
 			y = 0;
 		}
 	} 
-	 static void process() {
-		
-		// 꿀을 채취할 수 있는 구간에서 얻을 수 있는 최대 수익
-		makeProfit();
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j <= N-M; j++) {
-				combination(i, j+M, 1, profit[i][j]);
-			}
-		}
-		
-	}
+
 	
 	 static void makeProfit() {
 		for (int i = 0; i < N; i++) {
@@ -80,6 +81,7 @@ public class SWEA2115벌꿀채취 {
 			}
 		}
 	}
+	 
 	static void profitSubset(int i, int j, int cnt, int sum, int totalSum){
 		if(sum > C) return;
 		if( cnt == M ) {
