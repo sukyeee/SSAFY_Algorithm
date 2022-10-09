@@ -3,11 +3,12 @@ package bj;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class BJ17472다리만들기2 {
+// kruskal 방법 
+public class BJ17472다리만들기2_kruskal {
 
 	static int N, M;
 	static int map[][];
@@ -18,6 +19,9 @@ public class BJ17472다리만들기2 {
 	static int islandCnt;
 	static int cost[][];
 	static int min = Integer.MAX_VALUE;
+	static int parent[];
+	static int sum;
+	static PriorityQueue<Dist> pq = new PriorityQueue<>( (e1, e2) -> e1.dist - e2.dist); 
 	public static void main(String[] args) throws Exception {
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -62,83 +66,86 @@ public class BJ17472다리만들기2 {
 		
 		// 섬과 섬 사이의 최단거리 구하기 
 		matrix = new int[islandCnt][islandCnt];
-		
-		// BFS로 탐색 
-		bfs();
-	
-		
-		System.out.println(min);
-	}
-	
-	static void bfs() {
-		
-		// 섬과 섬 사이 최단거리 구하기 
-		
 		cost = new int[islandCnt][islandCnt];
 		
-		
-		for (int i = 0; i < islandCnt; i++) {
-			for (int j = 0; j < islandCnt; j++) {
-				if(i == j) continue;
-				cost[i][j] = Integer.MAX_VALUE;	
+		for (int i = 1; i < islandCnt; i++) {
+			for (int j = 1; j < islandCnt; j++) {
+				if(i==j) continue;
+				cost[i][j] = Integer.MAX_VALUE;
 			}
 		}
 		
-		for (int k = 1; k <= islandCnt; k++) {
-			visit = new boolean[N][M];
-			Deque<Dist> q = new ArrayDeque<>();
-			
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < M; j++) {
-					if(map[i][j] == k) {
-						q.offer(new Dist(i, j, 0));
-						visit[i][j] = true;
-					}
+		// BFS로 탐색 
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<M; j++) {
+				if(map[i][j]!=0) {
+					bfs(i, j, map[i][j]);
 				}
 			}
+		}
+		
+		// kruskal
+		kruskal();
+	
+		if(pq.size() == 0) System.out.println(-1);
+		else System.out.println(sum);
+	}
+	
+	static void kruskal() {
+		
+		makeSet();
+		
+		int n = 0; // 연결 된 간선의 개수 
+		while(!pq.isEmpty()) {
+			if( n == islandCnt - 2 ) break;
+			Dist e = pq.poll();
+			int u = e.y;
+			int v = e.x;
+			
+			if(  union(u,v) ) { // 사이클이 없을 때만 
+				sum += e.dist;
+				n++; 
+			}
+				
+		}
+		
+		
+	}
+	static void bfs(int y, int x, int idx) { // idx는 섬 번호 
+		
+		// 섬과 섬 사이 최단거리 구하기 
+		Deque<Dist> q = new ArrayDeque<>();
+		visit = new boolean[N][M];
+		for (int d = 0; d < 4; d++) {
+			q.offer(new Dist(y, x, 0));
+			visit[y][x] = true;
 			
 			while(!q.isEmpty()) {
 				
 				Dist e = q.poll();
+				int py = e.y + dy[d];
+				int px = e.x + dx[d];
 				
-					for (int d = 0; d < 4; d++) { // 한 방향으로만 봐야 함 
-						
-						int py = e.y;
-						int px = e.x;
-						
-						while(true) {
-							
-							py += dy[d];
-							px += dx[d];
-							
-							if(py < 0 || px < 0 || py >= N || px >= M) break;
-							if(visit[py][px] ) continue;
-							
-							// map[py][px] 가 0이 아닌 섬과 만나면 while문 종료 
-							if( map[py][px] != 0  && dist-1 > 1) {
-								cost[k][ map[py][px] ] = Math.min(cost[k][ map[py][px] ] , dist-1);
-							}
-						
-								q.offer(new Dist(py, px, e.dist + 1));
-								visit[py][px] = true;
-							
-							
-						}
-						
+				if(py < 0 || px < 0 || py >= N || px >= M || visit[py][px] || map[py][px] == idx) continue;
+				
+				if(  map[py][px] != 0) {
+					if( e.dist > 1 ) {
+						pq.add(new Dist(idx, map[py][px], e.dist));
+						cost[idx][map[py][px]] = Math.min(cost[idx][map[py][px]], e.dist );
+						break;
 					}
 					
+				}
+				else {
+					visit[py][px] = true;
+					q.offer(new Dist(py, px, e.dist + 1));
+				}
 				
-				
-			
 			}
 			
 			
-			
-			
-			
-			
-			
-		} // k
+			q.clear(); // 방향마다 최소값이 다르므로 
+		}
 		
 		
 		
@@ -166,6 +173,27 @@ public class BJ17472다리만들기2 {
 		
 	}
 	
+	static int find(int x) {
+		if( x == parent[x] ) return x;
+		
+		return parent[x] = find(parent[x]);
+	}
+	
+	static boolean union(int a, int b) {
+		a = find(a);
+		b = find(b);
+		if( a == b ) return false; // 이미 연결되어 있다면 false (사이클)
+		if( a != b )parent[b] = a;
+		
+		return true;
+	}
+	static void makeSet() {
+		parent = new int[islandCnt];
+		for (int i = 1; i < islandCnt; i++) {
+			parent[i] = i;
+		}
+	}
+	
 	static class Dist {
 		int y, x, dist;
 
@@ -178,6 +206,7 @@ public class BJ17472다리만들기2 {
 
 		
 	}
+	
 	
 	
 
