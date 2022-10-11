@@ -5,12 +5,13 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-public class SWEA2115벌꿀채취5 {
+public class SWEA2115벌꿀채취6 {
 
 	static int T;
-	static int N, M, C, res, map[][], profit[][];
-	static int selected[][];
-	static Dist select[];
+	static int N, M, C;
+	static int map[][];
+	static int select[][];
+	static Dist selected[];
 	static int max;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,22 +21,19 @@ public class SWEA2115벌꿀채취5 {
 			max = 0;
 			
 			StringTokenizer st = new StringTokenizer(br.readLine());
-
 			N = Integer.parseInt(st.nextToken());
 			M = Integer.parseInt(st.nextToken());
 			C = Integer.parseInt(st.nextToken());
-
+			
 			map = new int[N][N];
-			profit = new int[N][N];
-			selected = new int[N][N];
-			for (int i = 0; i < N; i++) { // 벌통 크기
+			select = new int[N][N];
+			selected = new Dist[M*2];
+			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
 				for (int j = 0; j < N; j++) {
 					map[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
-
-			
 			
 			dfs(1, 0);
 			
@@ -44,101 +42,105 @@ public class SWEA2115벌꿀채취5 {
 		} // testcase
 
 		
+		
 	}
+	static void setMax() {
+		int sum1 = 0;
+		int sum2 = 0;
+		for (int i = 0; i < selected.length; i++) {
+			if(selected[i].select) {
+				
+				if( select[selected[i].y][selected[i].x] == 1 ) {
+					sum1 += map[selected[i].y][selected[i].x];
+				}
+				else if( select[selected[i].y][selected[i].x] == 2 ) {
+					sum2 += map[selected[i].y][selected[i].x];
+				}
+				
+			}
+				
+		}
+		int sum = 0;
+		
+		if( sum1 <= C && sum2 <= C) {
+			for (int i = 0; i < selected.length; i++) {
+				if(selected[i].select) {
+					sum += map[selected[i].y][selected[i].x] * map[selected[i].y][selected[i].x] ;
+				}
+					
+			}
+		}
+		
+		max = Math.max(max, sum);
+		
+	}
+	static void subset(int srcIdx) {
+		
+		if( srcIdx == selected.length ) {
 
+			setMax();
+			
+			return;
+		}
+		
+		// 선택하고 
+		selected[srcIdx].select = true;
+		subset(srcIdx + 1);
+		
+		// 선택하지 않고 
+		selected[srcIdx].select = false;
+		subset(srcIdx + 1);
+		
+		
+	}
 	static void dfs(int cnt, int idx) {
 		
-		if( cnt == 3 ) {
-			// 최댓값 갱신 
-			select = new Dist[M*2];
-			// selected가 1과 2인 인덱스 넣기 
+		if(cnt == 3) {
+			
 			int k = 0;
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
-					if(selected[i][j] != 0) {
-						select[k] = new Dist(i, j, false);
+					if(select[i][j] != 0) {
+						selected[k] = new Dist(i, j, false);
 						k++;
 					}
 				}
 			}
+			
 			subset(0);
+			
 			return;
 		}
-		if( idx == N*N ) return;
+		if(idx == N*N)return;
 		
 		int y = idx/N;
 		int x = idx%N;
 		
 		if( x + M > N ) {
-			// 다음 행으로 넘어가기
+			// 한 줄을 넘어가면 
 			dfs(cnt, (idx+M) - (idx+M)%N );
+			
 		}
 		else {
-			
 			setSelect(cnt, y, x);
-			dfs(cnt + 1, idx + M);
+			dfs(cnt+1, idx + M);
 			setSelect(cnt, y, x);
-			dfs(cnt, idx + 1);
-			
+			dfs(cnt, idx+1);
 		}
 		
+		
+		
 	}
-	
-	static void subset(int srcIdx) {
-		
-		if( srcIdx == select.length ) {
-			
-			int sum1 = 0;
-			int sum2 = 0;
-			for (int i = 0; i < select.length; i++) {
-				if(select[i].select){
-					if( selected[ select[i].y ][ select[i].x ] == 1  ) {
-						// 일꾼1의 벌꿀 채취 
-							sum1 += map[ select[i].y ][ select[i].x ];
-					}
-					else if ( selected[ select[i].y ][ select[i].x ] == 2 ) {
-						// 일꾼2의 벌꿀 채취 
-							sum2 += map[ select[i].y ][ select[i].x ];
-					}
-				}
-				
-			}
-			
-			if( sum1 <= C &&  sum2 <= C  ) {
-				int sum = 0;
-				for (int i = 0; i < select.length; i++) {
-					if(select[i].select) {
-						sum += map[ select[i].y ][ select[i].x ] * map[ select[i].y ][ select[i].x ];	
-					}
-				}
-					
-				
-				
-				max = Math.max(max, sum);
-			}
-		
-			return;
-		}
-		
-		select[srcIdx].select = true;
-		subset( srcIdx + 1 );
-		select[srcIdx].select = false;
-		subset( srcIdx + 1 );
-	}
-	
+
 	static void setSelect(int cnt, int y, int x) {
-		
 		for (int i = 0; i < M; i++) {
-			
-			if(  selected[y][x + i] == 0 ) {
-				 selected[y][x + i] = cnt;
-			} 
-			else {
-				 selected[y][x + i] = 0;
+			if( select[y][i+x] == 0 ) {
+				select[y][i+x] = cnt;
 			}
-			
+			else {
+				select[y][i+x] = 0;
+			}
 		}
-		
 	}
 	
 	static class Dist {
@@ -150,9 +152,10 @@ public class SWEA2115벌꿀채취5 {
 			this.x = x;
 			this.select = select;
 		}
-
 		
 	}
+	
+	
 }
 /*
 10
