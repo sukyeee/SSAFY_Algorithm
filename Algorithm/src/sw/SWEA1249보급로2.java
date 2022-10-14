@@ -45,7 +45,7 @@ public class SWEA1249보급로2 {
 			// 출발지 S에서 도착지 G 까지, 도로복구작업.
 			
 			q.offer(new Dist(0, 0, map[0][0]));
-			visit[0][0] = true;
+
 			while(!q.isEmpty()) {
 				int q_size = q.size();
 				for (int i = 0; i < q_size; i++) {
@@ -59,9 +59,9 @@ public class SWEA1249보급로2 {
 						
 						// 더 작을 때만 갱신
 						if(  e.v + map[py][px] < cost[py][px] ) { // 기존보다 더 가중치 작을때만
-							visit[py][px] = true;
+
 							cost[py][px] = e.v + map[py][px];
-							q.offer(new Dist(py, px, e.v + map[py][px]));
+							q.offer(new Dist(py, px, cost[py][px]));
 			
 						}
 						
