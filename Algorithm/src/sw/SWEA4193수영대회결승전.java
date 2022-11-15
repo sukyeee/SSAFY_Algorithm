@@ -10,12 +10,16 @@ public class SWEA4193수영대회결승전 {
 	static int N;
 	static int map[][]; // 수영장 
 	static boolean visit[][];
+	static int A, B, C, D;
+	static int ans; // 이동시간 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		T = Integer.parseInt(br.readLine());
 		
 		for (int t = 1; t <= T; t++) {
+			
+			ans = -1;
 			
 			N = Integer.parseInt(br.readLine());
 			map = new int[N][N];
@@ -26,9 +30,25 @@ public class SWEA4193수영대회결승전 {
 					map[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
-	
+			
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			// 시작위치 A, B 
+			A = Integer.parseInt(st.nextToken());
+			B = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(br.readLine());
+			// 도착위치 C, D
+			C = Integer.parseInt(st.nextToken());
+			D = Integer.parseInt(st.nextToken());
+			
+			// 공간 안에서 가장 빠른 길을 찾아야 함
+			// 주기적으로 사라졌다 나타나는 소용돌이 같은 장애물 존재
+			// 소용돌이는 생성 후 2초 유지, 1초간 잠잠
+			// 0초에 생성된 소용돌이 0초, 1초까지 유지되고 2초에 사라지게 됨. 3초 4에는 생성되고 5초에 사라짐 
+			// 한 번 통과한 소용돌이 위에서는 머물러 있을 수 있다
 			
 			
+			
+			System.out.println("#" + " ");
 			
 		} // testcase
 		

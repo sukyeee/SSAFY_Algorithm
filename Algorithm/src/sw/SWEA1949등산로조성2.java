@@ -68,7 +68,7 @@ public class SWEA1949등산로조성2 {
 				visit = new boolean[N][N];
 				copyOfMap();
 				visit[top.get(i).y][top.get(i).x] = true;
-				dfs(top.get(i).y, top.get(i).x, 1, 0); // 딱 한 곳만 정해서 최대 깊이만큼 지형 깎을 수 있음
+				dfs(top.get(i).y, top.get(i).x, 1, 0, topValue); // 딱 한 곳만 정해서 최대 깊이만큼 지형 깎을 수 있음
 				visit[top.get(i).y][top.get(i).x] = false;
 			}
 			
@@ -79,7 +79,7 @@ public class SWEA1949등산로조성2 {
 		
 		
 	}
-	static void dfs(int y, int x, int count, int depth ) { // count는 남은 깎는 횟수 (항상1) / k는 현재 봉우리 인덱스 / depth는 거리 
+	static void dfs(int y, int x, int count, int depth, int topValue ) { // count는 남은 깎는 횟수 (항상1) / k는 현재 봉우리 인덱스 / depth는 거리 
 		
 		ans = Math.max(ans, depth); // 최대 깊이 출력 
 		
@@ -93,25 +93,23 @@ public class SWEA1949등산로조성2 {
 			if( topValue > map[py][px] ) {
 				
 				visit[py][px] = true;
-				dfs(py, px, count, depth + 1 );
+				dfs(py, px, count, depth + 1, map[py][px] );
 				visit[py][px] = false;
+				
 			}
 			// 깎아서 봉우리보다 작아질 수 있다면? 깎기, 그래도 크거나 같다면 통과x
 			else {
-				
+				// 1부터 k까지 다 깎아보는건가?
 				if( count > 0 && topValue > (map[py][px] - K)) {
 					visit[py][px] = true;
-					map[py][px]--;
-					dfs(py, px, count - 1, depth + 1 );
-					map[py][px]++;
+					// K만큼 깎을 수는 있지만, ( 일단if문에서 통과할 수 있다는것은 보장되었으니) 1만큼만 깎아서 다음에 갈 수 있는 최대 길이 확보
+					dfs(py, px, count - 1, depth + 1, topValue - 1 );
 					visit[py][px] = false;
 				}
 				
 			}
 			
-			
 		}
-		
 		
 	}
 	static void copyOfMap() {
