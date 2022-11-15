@@ -12,6 +12,8 @@ public class SWEA1949등산로조성2 {
 	static int T;
 	static int N, K;
 	static int map[][];
+	static int mapCopy[][];
+	static boolean visit[][];
 	static int topValue;
 	static List<Dist> top = new ArrayList<>();
 	
@@ -35,19 +37,24 @@ public class SWEA1949등산로조성2 {
 			
 			
 			map = new int[N][N];
+			mapCopy = new int[N][N];
+			visit = new boolean[N][N];
+			
 			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
 				for (int j = 0; j < N; j++) {
-					map[i][j] = Integer.parseInt(st.nextToken());
-					topValue = Math.max(topValue, map[i][j]); // 봉우리 찾기 (가장 높은)
+					mapCopy[i][j] = Integer.parseInt(st.nextToken());
+					topValue = Math.max(topValue, mapCopy[i][j]); // 봉우리 찾기 (가장 높은)
 				}
 			}
 			
+		
 			// 가장 높은 봉우리에서 시작 
 			// 높 -> 낮 지형 
 			// 대각선불가능 
 			// 딱 한곳을 정해서 최대 K깊이만큼 깎을 수 있음
 			
+			copyOfMap();
 			// 봉우리 위치 저장 
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
@@ -57,16 +64,22 @@ public class SWEA1949등산로조성2 {
 				}
 			}
 			
-			dfs(top.get(0).y, top.get(0).x, 1, 0, 0);
+			for (int i = 0; i < top.size(); i++) { // 시작점은 항상 봉우리
+				visit = new boolean[N][N];
+				copyOfMap();
+				visit[top.get(i).y][top.get(i).x] = true;
+				dfs(top.get(i).y, top.get(i).x, 1, 0); // 딱 한 곳만 정해서 최대 깊이만큼 지형 깎을 수 있음
+				visit[top.get(i).y][top.get(i).x] = false;
+			}
 			
-			System.out.println("#" + t + " " + ans);
+			System.out.println("#" + t + " " + (ans+1));
 			
 		} // testcase
 		
 		
 		
 	}
-	static void dfs(int y, int x, int count, int k, int depth ) { // count는 남은 깎는 횟수 (항상1) / k는 현재 봉우리 인덱스 / depth는 거리 
+	static void dfs(int y, int x, int count, int depth ) { // count는 남은 깎는 횟수 (항상1) / k는 현재 봉우리 인덱스 / depth는 거리 
 		
 		ans = Math.max(ans, depth); // 최대 깊이 출력 
 		
@@ -74,20 +87,24 @@ public class SWEA1949등산로조성2 {
 			int py = y + dy[d];
 			int px = x + dx[d];
 			
-			if( py < 0 || px < 0 || py >= N || px >= N )continue;
+			if( py < 0 || px < 0 || py >= N || px >= N || visit[py][px] )continue;
 			
 			// 봉우리보다 더 작은 경우는 깎지 않아도 통과 
-			if( map[y][x] > map[py][px] ) {
+			if( topValue > map[py][px] ) {
 				
-				dfs(py, px, count, k, depth + 1 );
+				visit[py][px] = true;
+				dfs(py, px, count, depth + 1 );
+				visit[py][px] = false;
 			}
 			// 깎아서 봉우리보다 작아질 수 있다면? 깎기, 그래도 크거나 같다면 통과x
 			else {
 				
-				if( count > 0 && map[y][x] > (map[py][px] - K)) {
+				if( count > 0 && topValue > (map[py][px] - K)) {
+					visit[py][px] = true;
 					map[py][px]--;
-					dfs(py, px, count - 1, k, depth + 1 );
+					dfs(py, px, count - 1, depth + 1 );
 					map[py][px]++;
+					visit[py][px] = false;
 				}
 				
 			}
@@ -96,11 +113,13 @@ public class SWEA1949등산로조성2 {
 		}
 		
 		
-	
-		
-		
-		
-		
+	}
+	static void copyOfMap() {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				map[i][j] = mapCopy[i][j];
+			}
+		}
 	}
 	static class Dist {
 		int y, x;
