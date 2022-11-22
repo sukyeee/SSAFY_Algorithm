@@ -118,8 +118,7 @@ public class SWEA2115벌꿀채취6 {
 		
 		if( x + M > N ) {
 			// 한 줄을 넘어가면 
-			dfs(cnt, (idx+M) - (idx+M)%N );
-			
+			dfs(cnt, (idx+M) - (idx+M)%N );	
 		}
 		else {
 			setSelect(cnt, y, x);
